@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
+import { Breadcrumbs } from "@/components/Seo";
 import { PageIntro, Note } from "@/components/Site";
+import { investigations } from "@/lib/data";
+import { createSeoMetadata } from "@/lib/seo";
 import InvestigationList from "./InvestigationList";
-export const metadata: Metadata = { title: "Investigations" };
+export const metadata: Metadata = createSeoMetadata({
+  title: "Investigations",
+  description:
+    "Explore Pramaan’s research archive and follow claims through evidence, sources, context, and uncertainty.",
+  path: "/investigations",
+  indexable: investigations.some((item) => !item.isMock && item.publishedAt),
+});
 export default async function InvestigationsPage({
   searchParams,
 }: {
@@ -10,6 +19,7 @@ export default async function InvestigationsPage({
   const params = await searchParams;
   return (
     <>
+      <Breadcrumbs currentUrl="/investigations" items={[{ name: "Home", href: "/" }, { name: "Investigations" }]} />
       <PageIntro
         eyebrow="The research archive"
         title="Investigations"

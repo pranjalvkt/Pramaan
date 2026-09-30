@@ -1,7 +1,19 @@
+import type { Metadata } from "next";
+import { Breadcrumbs } from "@/components/Seo";
 import { PageIntro } from "@/components/Site";
+import { createSeoMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = createSeoMetadata({
+  title: "About",
+  description:
+    "Learn why Pramaan investigates repeated claims and how it makes evidence, sources, and uncertainty visible.",
+  path: "/about",
+});
+
 export default function AboutPage() {
   return (
     <>
+      <Breadcrumbs currentUrl="/about" items={[{ name: "Home", href: "/" }, { name: "About Pramaan" }]} />
       <PageIntro
         eyebrow="About Pramaan"
         title="We don't ask you to trust us."

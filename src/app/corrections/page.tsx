@@ -1,7 +1,19 @@
+import type { Metadata } from "next";
+import { Breadcrumbs } from "@/components/Seo";
 import { PageIntro } from "@/components/Site";
+import { createSeoMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = createSeoMetadata({
+  title: "Corrections and updates",
+  description:
+    "Pramaan’s corrections policy explains how readers can report errors and how verified changes are documented.",
+  path: "/corrections",
+});
+
 export default function CorrectionsPage() {
   return (
     <>
+      <Breadcrumbs currentUrl="/corrections" items={[{ name: "Home", href: "/" }, { name: "Corrections" }]} />
       <PageIntro
         eyebrow="The record can change"
         title="Corrections & updates"
@@ -18,8 +30,9 @@ export default function CorrectionsPage() {
         <p>
           Include the investigation title, the passage in question, and any supporting evidence.
         </p>
-        <a className="text-link" href="mailto:corrections@pramaan.org">
-          Email corrections@pramaan.org →
+        {/* corrections@pramaan.org */}
+        <a className="text-link" href="mailto:pranjalvktripathi@gmail.com">
+          Email pranjalvktripathi@gmail.com →
         </a>
       </div>
     </>

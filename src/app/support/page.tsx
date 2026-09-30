@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
+import { Breadcrumbs } from "@/components/Seo";
 import { BuyMeACoffeeButton } from "@/components/BuyMeACoffeeButton";
 import { Eyebrow, PageIntro } from "@/components/Site";
+import { createSeoMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createSeoMetadata({
   title: "Support Pramaan — Evidence Before Belief",
   description:
-    "Support Pramaan's independent evidence research, source preservation, infrastructure, and ongoing development.",
-};
+    "Support Pramaan’s independent evidence research, source preservation, infrastructure, and ongoing development.",
+  path: "/support",
+  absoluteTitle: true,
+});
 
 const uses = [
   "Hosting, database and storage",
@@ -24,6 +28,7 @@ const steps = [
 export default function SupportPage() {
   return (
     <>
+      <Breadcrumbs currentUrl="/support" items={[{ name: "Home", href: "/" }, { name: "Support Pramaan" }]} />
       <PageIntro
         eyebrow="Independent by design"
         title="Support Pramaan"

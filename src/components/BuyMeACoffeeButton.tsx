@@ -9,7 +9,10 @@ type BuyMeACoffeeButtonProps = {
 
 /** External support link; payment and supporter data stay with Buy Me a Coffee. */
 export function BuyMeACoffeeButton({ className = "button button-dark" }: BuyMeACoffeeButtonProps) {
-  const url = process.env.NEXT_PUBLIC_BUYMEACOFFEE_URL?.trim();
+  // Next.js replaces this direct reference with the public env value when it
+  // builds the client bundle. Keep the env lookup separate from normalization.
+  const configuredUrl = process.env.NEXT_PUBLIC_BUYMEACOFFEE_URL;
+  const url = configuredUrl?.trim();
   const validUrl = !!url && /^https:\/\/(?:www\.)?buymeacoffee\.com\/[a-zA-Z0-9_-]+\/?$/.test(url);
 
   useEffect(() => {

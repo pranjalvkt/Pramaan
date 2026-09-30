@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
+import { Breadcrumbs } from "@/components/Seo";
 import { PageIntro } from "@/components/Site";
-export const metadata: Metadata = { title: "Methodology" };
+import { createSeoMetadata } from "@/lib/seo";
+export const metadata: Metadata = createSeoMetadata({
+  title: "Methodology",
+  description:
+    "How Pramaan selects claims, evaluates sources, weighs conflicting evidence, represents uncertainty, and corrects published research.",
+  path: "/methodology",
+});
 const steps = [
   [
     "How claims are selected",
@@ -38,6 +45,7 @@ const steps = [
 export default function MethodologyPage() {
   return (
     <>
+      <Breadcrumbs currentUrl="/methodology" items={[{ name: "Home", href: "/" }, { name: "Methodology" }]} />
       <PageIntro
         eyebrow="How we work"
         title="Evidence first. Context always."

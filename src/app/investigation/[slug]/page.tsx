@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { investigations } from "@/lib/data";
+import { investigations, slugify } from "@/lib/data";
 import { Eyebrow, Note, SupportCallout, Verdict } from "@/components/Site";
+import { Breadcrumbs, JsonLd } from "@/components/Seo";
+import { createInvestigationMetadata, createSeoMetadata, investigationSchema } from "@/lib/seo";
 import InvestigationInteractive from "./interactive";
 export function generateStaticParams() {
   return investigations.map((x) => ({ slug: x.slug }));
@@ -15,12 +17,13 @@ export async function generateMetadata({
   const { slug } = await params;
   const item = investigations.find((x) => x.slug === slug);
   return item
-    ? {
-        title: item.title,
-        description: item.summary,
-        openGraph: { title: item.title, description: item.summary, type: "article" },
-      }
-    : { title: "Investigation" };
+    ? createInvestigationMetadata(item)
+    : createSeoMetadata({
+        title: "Investigation not found",
+        description: "This investigation could not be found.",
+        path: `/investigation/${slug}`,
+        indexable: false,
+      });
 }
 export default async function InvestigationPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -29,10 +32,21 @@ export default async function InvestigationPage({ params }: { params: Promise<{ 
   const related = investigations
     .filter((x) => x.slug !== slug && x.category === item.category)
     .slice(0, 2);
+  const articleData = investigationSchema(item);
   return (
     <>
       <div className="investigation-layout">
         <article className="investigation-article">
+          <Breadcrumbs
+            currentUrl={`/investigation/${item.slug}`}
+            items={[
+              { name: "Home", href: "/" },
+              { name: "Investigations", href: "/investigations" },
+              { name: item.category, href: `/category/${slugify(item.category)}` },
+              { name: item.title },
+            ]}
+          />
+          {articleData && <JsonLd data={articleData} />}
           <Note>
             This is a mock investigation record created to demonstrate the Pramaan format. Its
             claims, assessments, evidence and source records have not been researched or verified.
@@ -43,20 +57,29 @@ export default async function InvestigationPage({ params }: { params: Promise<{ 
           <h1 className="investigation-title">{item.title}</h1>
           <p className="investigation-deck">{item.summary}</p>
           <div className="investigation-meta">
-            <span>Published {item.date}</span>
-            <span>·</span>
-            <span>Last reviewed {item.date}</span>
+            {item.publishedAt ? (
+              <time dateTime={item.publishedAt}>
+                Published {new Intl.DateTimeFormat("en", { dateStyle: "long" }).format(new Date(item.publishedAt))}
+              </time>
+            ) : (
+              <span>Mock record · unpublished</span>
+            )}
+            {item.updatedAt && (
+              <time dateTime={item.updatedAt}>
+                Updated {new Intl.DateTimeFormat("en", { dateStyle: "long" }).format(new Date(item.updatedAt))}
+              </time>
+            )}
             <span>·</span>
             <span>{item.read}</span>
           </div>
-          <div className="assessment">
-            <span className="assessment-label">Assessment · Demonstration only</span>
-            <strong>{item.verdict}</strong>
-            <p>{item.context}</p>
-          </div>
           <section className="article-section" id="claim">
             <h2>The claim</h2>
-            <p>“{item.claim}”</p>
+            <blockquote>“{item.claim}”</blockquote>
+          </section>
+          <section className="assessment" aria-labelledby="assessment-title">
+            <span className="assessment-label">Assessment · Demonstration only</span>
+            <h2 id="assessment-title">{item.verdict}</h2>
+            <p>{item.context}</p>
           </section>
           <section className="article-section" id="short-answer">
             <h2>Short answer</h2>
@@ -96,7 +119,9 @@ export default async function InvestigationPage({ params }: { params: Promise<{ 
                 <p>{e.body}</p>
                 <span className="source-chip">{e.type}</span>
                 <div style={{ marginTop: 15 }}>
-                  <InvestigationInteractive source={item.sources[0]} label="[1]" />
+                  <Link className="citation-link" href={`/source/${item.sources[0].slug}`}>
+                    [1] {item.sources[0].title}
+                  </Link>
                 </div>
               </div>
             ))}
@@ -128,7 +153,7 @@ export default async function InvestigationPage({ params }: { params: Promise<{ 
           <section className="article-section" id="timeline">
             <h2>Timeline</h2>
             <p>
-              {item.date} — Mock investigation format created to illustrate a public research trail.
+              Illustrative timeline event for this mock investigation. No historical date is asserted.
             </p>
           </section>
           <section className="article-section" id="sources">
@@ -141,6 +166,9 @@ export default async function InvestigationPage({ params }: { params: Promise<{ 
                 </small>
                 <h3>{source.title}</h3>
                 <p>{source.description}</p>
+                <Link className="text-link" href={`/source/${source.slug}`}>
+                  Open source record <span aria-hidden="true">↗</span>
+                </Link>
                 <InvestigationInteractive source={source} />
               </div>
             ))}

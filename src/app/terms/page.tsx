@@ -1,7 +1,19 @@
+import type { Metadata } from "next";
+import { Breadcrumbs } from "@/components/Seo";
 import { PageIntro } from "@/components/Site";
+import { createSeoMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = createSeoMetadata({
+  title: "Terms",
+  description: "Terms for reading and sharing Pramaan’s research and demonstration content.",
+  path: "/terms",
+  indexable: false,
+});
+
 export default function TermsPage() {
   return (
     <>
+      <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Terms" }]} />
       <PageIntro
         eyebrow="Using this site"
         title="Terms"
@@ -20,10 +32,11 @@ export default function TermsPage() {
           researched findings.
         </p>
         <h2>Questions</h2>
+        {/* hello@pramaan.org */}
         <p>
           Contact{" "}
-          <a className="citation-link" href="mailto:hello@pramaan.org">
-            hello@pramaan.org
+          <a className="citation-link" href="mailto:pranjalvktripathi@gmail.com">
+            pranjalvktripathi@gmail.com
           </a>
           .
         </p>

@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import {
   ArrowRight,
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 import type { Investigation } from "@/lib/data";
 import { BuyMeACoffeeButton } from "@/components/BuyMeACoffeeButton";
+import { formatPublicDate } from "@/lib/seo";
 
 export function Header() {
   const [menu, setMenu] = useState(false);
@@ -106,8 +108,9 @@ export function Footer() {
           <b>Participate</b>
           <Link href="/submit">Submit a claim</Link>
           <Link href="/report-error">Report an error</Link>
+          {/* hello@pramaan.org */}
           <Link href="/support">Support Pramaan</Link>
-          <a href="mailto:hello@pramaan.org">Contact</a>
+          <a href="mailto:pranjalvktripathi@gmail.com">Contact</a>
         </div>
       </div>
       <div className="footer-bottom">
@@ -189,14 +192,15 @@ export function InvestigationCard({
       className={`investigation-card${featured ? " feature-card" : ""}`}
       href={`/investigation/${item.slug}`}
     >
-      <div
-        className="card-image"
-        style={{
-          backgroundImage: `linear-gradient(180deg, transparent 38%, rgba(23,28,26,.35)), url("${item.image}")`,
-        }}
-        role="img"
-        aria-label={item.imageAlt}
-      >
+      <div className="card-image">
+        <Image
+          className="card-photo"
+          src={item.image}
+          alt={item.imageAlt}
+          fill
+          sizes="(max-width: 720px) 100vw, (max-width: 1000px) 50vw, 34vw"
+        />
+        <span className="image-shade" aria-hidden="true" />
         <span className="image-category">{item.category}</span>
         <span className="save-icon" aria-hidden="true">
           <Bookmark size={15} />
@@ -209,7 +213,9 @@ export function InvestigationCard({
         </div>
         <h3>{item.title}</h3>
         <p>{item.summary}</p>
-        <span className="card-date">{item.date}</span>
+        <span className="card-date">
+          {item.publishedAt ? `Published ${formatPublicDate(item.publishedAt)}` : "Mock example · unpublished"}
+        </span>
       </div>
     </Link>
   );

@@ -1,5 +1,7 @@
 export type Source = {
   id: string;
+  isMock: boolean;
+  slug: string;
   title: string;
   author: string;
   publisher: string;
@@ -10,13 +12,16 @@ export type Source = {
   url?: string;
 };
 export type Investigation = {
+  isMock: boolean;
   slug: string;
   category: string;
   verdict: string;
   title: string;
   claim: string;
   summary: string;
-  date: string;
+  publishedAt?: string;
+  updatedAt?: string;
+  author?: { name: string; url?: string };
   read: string;
   image: string;
   imageAlt: string;
@@ -33,6 +38,8 @@ export type Investigation = {
 // Editorial examples are explicitly marked as mock content. No sources or findings are presented as real.
 const mockSource = (id: string, title: string, type: string): Source => ({
   id,
+  isMock: true,
+  slug: slugify(title),
   title,
   author: "Illustrative author",
   publisher: "Mock source record",
@@ -44,6 +51,7 @@ const mockSource = (id: string, title: string, type: string): Source => ({
 });
 export const investigations: Investigation[] = [
   {
+    isMock: true,
     slug: "the-library-of-alexandria",
     category: "World History",
     verdict: "Context Missing",
@@ -52,7 +60,6 @@ export const investigations: Investigation[] = [
       "The Library of Alexandria was destroyed in one catastrophic fire, erasing the knowledge of the ancient world.",
     summary:
       "The familiar story compresses centuries of change into one dramatic moment. This mock investigation demonstrates how to separate surviving accounts from later retellings.",
-    date: "September 18, 2026",
     read: "8 min read",
     image:
       "https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?auto=format&fit=crop&w=1400&q=85",
@@ -82,6 +89,7 @@ export const investigations: Investigation[] = [
     featured: true,
   },
   {
+    isMock: true,
     slug: "einstein-and-the-bees",
     category: "Science",
     verdict: "Unverified",
@@ -89,7 +97,6 @@ export const investigations: Investigation[] = [
     claim: "If bees disappeared, humans would have only four years left to live.",
     summary:
       "The quote is widely attributed to Einstein, but a confident attribution requires a traceable source. This mock entry shows how a quote investigation could present that uncertainty.",
-    date: "September 12, 2026",
     read: "6 min read",
     image:
       "https://images.unsplash.com/photo-1587049352851-8d4e89133924?auto=format&fit=crop&w=1400&q=85",
@@ -115,6 +122,7 @@ export const investigations: Investigation[] = [
     sources: [mockSource("s2", "Illustrative quote archive record", "Historical archive")],
   },
   {
+    isMock: true,
     slug: "the-great-wall-from-space",
     category: "Internet Myths",
     verdict: "Misleading",
@@ -122,7 +130,6 @@ export const investigations: Investigation[] = [
     claim: "The Great Wall is the only human-made structure visible from the Moon.",
     summary:
       "Visibility depends on distance, conditions, and what counts as unaided sight. The popular phrasing bundles two different claims into one.",
-    date: "September 08, 2026",
     read: "5 min read",
     image:
       "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=1400&q=85",
@@ -145,6 +152,7 @@ export const investigations: Investigation[] = [
     sources: [mockSource("s3", "Illustrative observation record", "Official organization")],
   },
   {
+    isMock: true,
     slug: "the-midnight-sun-and-sleep",
     category: "Medicine & Health",
     verdict: "Partially Supported",
@@ -152,7 +160,6 @@ export const investigations: Investigation[] = [
     claim: "People sleep significantly worse whenever there is a full moon.",
     summary:
       "Research on lunar phases and sleep has not produced one simple answer. Study design, sample size, and replication matter to the conclusion.",
-    date: "September 02, 2026",
     read: "7 min read",
     image:
       "https://images.unsplash.com/photo-1532978379173-523e16f371f2?auto=format&fit=crop&w=1400&q=85",
@@ -174,6 +181,7 @@ export const investigations: Investigation[] = [
     sources: [mockSource("s4", "Illustrative sleep research record", "Academic research")],
   },
   {
+    isMock: true,
     slug: "the-ancient-zero",
     category: "Indian History",
     verdict: "Supported",
@@ -182,7 +190,6 @@ export const investigations: Investigation[] = [
       "The development of zero as a number has a significant history in the Indian mathematical tradition.",
     summary:
       "A careful account distinguishes the use of placeholders from zero as a number and traces how mathematical ideas moved across languages and scholarly communities.",
-    date: "August 26, 2026",
     read: "9 min read",
     image:
       "https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=1400&q=85",
@@ -205,6 +212,7 @@ export const investigations: Investigation[] = [
     sources: [mockSource("s5", "Illustrative mathematical manuscript record", "Book")],
   },
   {
+    isMock: true,
     slug: "lightning-never-strikes-twice",
     category: "Science",
     verdict: "False",
@@ -212,7 +220,6 @@ export const investigations: Investigation[] = [
     claim: "Lightning never strikes the same place twice.",
     summary:
       "The saying is a metaphor, not a reliable description of lightning. A complete fact check would show how repeated strikes are recorded and under what conditions.",
-    date: "August 14, 2026",
     read: "4 min read",
     image:
       "https://images.unsplash.com/photo-1605727216801-e27ce1d0cc28?auto=format&fit=crop&w=1400&q=85",
@@ -235,6 +242,7 @@ export const investigations: Investigation[] = [
     sources: [mockSource("s6", "Illustrative weather record", "Dataset")],
   },
   {
+    isMock: true,
     slug: "the-quote-about-history",
     category: "Famous Quotes",
     verdict: "Disputed",
@@ -242,7 +250,6 @@ export const investigations: Investigation[] = [
     claim: "The phrase “History repeats itself” was first written by one specific famous author.",
     summary:
       "Short sayings often have multiple versions and a long attribution trail. Pinning down an origin means finding dated appearances, not just familiar names.",
-    date: "August 03, 2026",
     read: "6 min read",
     image:
       "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1400&q=85",
@@ -264,6 +271,7 @@ export const investigations: Investigation[] = [
     sources: [mockSource("s7", "Illustrative quotation bibliography", "Book")],
   },
   {
+    isMock: true,
     slug: "what-a-census-can-tell-us",
     category: "Statistics & Data",
     verdict: "Context Missing",
@@ -271,7 +279,6 @@ export const investigations: Investigation[] = [
     claim: "A single percentage describes the experience of everyone in a population equally.",
     summary:
       "A percentage needs its denominator, sample, date, geography, and measurement method. Without those details, comparisons can mislead.",
-    date: "July 21, 2026",
     read: "7 min read",
     image:
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1400&q=85",
@@ -313,6 +320,15 @@ export const categories = [
   "Famous Quotes",
   "Statistics & Data",
 ];
+
+export function slugify(value: string) {
+  return value
+    .normalize("NFKD")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 export const allSources = investigations
   .flatMap((item) => item.sources)
   .filter((source, i, all) => all.findIndex((x) => x.id === source.id) === i);

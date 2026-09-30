@@ -62,7 +62,12 @@ export default function SourcePreview({
         </div>
         <p>{source.description}</p>
         {source.url ? (
-          <a className="button button-dark" href={source.url} target="_blank" rel="noreferrer">
+          <a
+            className="button button-dark"
+            href={source.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Open original source <ExternalLink size={14} />
           </a>
         ) : (

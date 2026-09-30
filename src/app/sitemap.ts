@@ -1,32 +1,66 @@
 import type { MetadataRoute } from "next";
-import { investigations } from "@/lib/data";
+import { allSources, categories, investigations, slugify } from "@/lib/data";
+import { absoluteUrl } from "@/lib/seo";
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://pramaan.org";
-  const pages = [
+  const fixedPages = [
     "",
-    "about",
-    "investigations",
-    "categories",
-    "sources",
-    "timeline",
-    "methodology",
-    "transparency",
-    "submit",
-    "support",
-    "corrections",
+    "/about",
+    "/methodology",
+    "/transparency",
+    "/corrections",
+    "/submit",
+    "/support",
   ];
+
+  const investigationPages = investigations
+    .filter((item) => !item.isMock && Boolean(item.publishedAt))
+    .map((item) => ({
+      url: absoluteUrl(`/investigation/${item.slug}`),
+      ...(item.updatedAt || item.publishedAt
+        ? { lastModified: new Date(item.updatedAt || item.publishedAt!) }
+        : {}),
+    }));
+
+  const sourcePages = allSources
+    .filter(
+      (source) =>
+        !source.isMock &&
+        investigations.some(
+          (item) =>
+            !item.isMock &&
+            item.publishedAt &&
+            item.sources.some((related) => related.id === source.id)
+        )
+    )
+    .map((source) => ({ url: absoluteUrl(`/source/${source.slug}`) }));
+
+  const categoryPages = categories
+    .filter((category) =>
+      investigations.some(
+        (item) => !item.isMock && item.publishedAt && item.category === category
+      )
+    )
+    .map((category) => ({ url: absoluteUrl(`/category/${slugify(category)}`) }));
+
+  const hasPublishedInvestigation = investigations.some((item) => !item.isMock && item.publishedAt);
+  const hasIndexableSource = sourcePages.length > 0;
+  const hasIndexableCategory = categories.some((category) =>
+    investigations.some(
+      (item) => !item.isMock && item.publishedAt && item.category === category
+    )
+  );
+  const archivePages = [
+    ...(hasPublishedInvestigation ? ["/investigations"] : []),
+    ...(hasIndexableSource ? ["/sources"] : []),
+    ...(hasIndexableCategory ? ["/categories"] : []),
+  ];
+
   return [
-    ...pages.map((path) => ({
-      url: path ? `${base}/${path}` : base,
-      lastModified: new Date("2026-09-30"),
-      changeFrequency: "weekly" as const,
-      priority: path ? 0.7 : 1,
-    })),
-    ...investigations.map((item) => ({
-      url: `${base}/investigation/${item.slug}`,
-      lastModified: new Date(item.date),
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    })),
+    ...fixedPages.map((path) => ({ url: absoluteUrl(path) })),
+    ...archivePages.map((path) => ({ url: absoluteUrl(path) })),
+    ...investigationPages,
+    ...sourcePages,
+    ...categoryPages,
   ];
 }

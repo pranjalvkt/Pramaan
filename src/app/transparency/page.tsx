@@ -1,9 +1,20 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+import { Breadcrumbs } from "@/components/Seo";
 import { PageIntro } from "@/components/Site";
+import { createSeoMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = createSeoMetadata({
+  title: "Transparency",
+  description:
+    "How Pramaan is maintained and funded, and how reader contributions remain separate from evidence evaluation and editorial conclusions.",
+  path: "/transparency",
+});
 
 export default function TransparencyPage() {
   return (
     <>
+      <Breadcrumbs currentUrl="/transparency" items={[{ name: "Home", href: "/" }, { name: "Transparency" }]} />
       <PageIntro
         eyebrow="Open by design"
         title="Transparency"

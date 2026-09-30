@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { ArrowDown, ArrowRight, ArrowUpRight, Sparkles } from "lucide-react";
-import { categories, investigations } from "@/lib/data";
-import { Eyebrow, InvestigationCard, SectionHeading, Verdict } from "@/components/Site";
+import { categories, investigations, slugify } from "@/lib/data";
+import { Eyebrow, InvestigationCard, Note, SectionHeading, Verdict } from "@/components/Site";
+import { JsonLd, organizationSchema, websiteSchema } from "@/components/Seo";
+import { formatPublicDate } from "@/lib/seo";
 
 export default function Home() {
   const featured = investigations.slice(0, 3);
   return (
     <>
+      <JsonLd data={[organizationSchema(), websiteSchema()]} />
       <section className="hero">
         <div className="hero-grain" />
         <div className="hero-inner">
@@ -93,6 +96,7 @@ export default function Home() {
       </section>
       <section className="section featured-section" id="featured">
         <div className="container">
+          <Note>Featured examples are mock records for demonstrating the investigation format, not verified research.</Note>
           <SectionHeading
             label="The work"
             title="Featured investigations"
@@ -118,7 +122,7 @@ export default function Home() {
               <Link
                 key={cat}
                 className="category-tile"
-                href={`/investigations?category=${encodeURIComponent(cat)}`}
+                href={`/category/${slugify(cat)}`}
               >
                 <span className="category-number">{String(i + 1).padStart(2, "0")}</span>
                 <span>{cat}</span>
@@ -130,6 +134,7 @@ export default function Home() {
       </section>
       <section className="recent-section">
         <div className="container">
+          <Note>These archive entries are mock examples. No published investigations are available yet.</Note>
           <SectionHeading
             label="Fresh perspective"
             title="Recently investigated"
@@ -142,7 +147,7 @@ export default function Home() {
                 <span className="recent-category">{item.category}</span>
                 <span className="recent-title">{item.title}</span>
                 <Verdict label={item.verdict} />
-                <span className="recent-date">{item.date}</span>
+                <span className="recent-date">{item.publishedAt ? formatPublicDate(item.publishedAt) : "Mock"}</span>
                 <ArrowUpRight className="recent-arrow" size={17} />
               </Link>
             ))}

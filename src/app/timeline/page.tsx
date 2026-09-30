@@ -1,4 +1,15 @@
+import type { Metadata } from "next";
+import { Breadcrumbs } from "@/components/Seo";
 import { PageIntro } from "@/components/Site";
+import { createSeoMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = createSeoMetadata({
+  title: "Historical timeline",
+  description:
+    "Explore dated records, historical events, and later interpretations in context through Pramaan’s timeline.",
+  path: "/timeline",
+  indexable: false,
+});
 const items = [
   [
     "1947",
@@ -22,6 +33,7 @@ const items = [
 export default function TimelinePage() {
   return (
     <>
+      <Breadcrumbs currentUrl="/timeline" items={[{ name: "Home", href: "/" }, { name: "Timeline" }]} />
       <PageIntro
         eyebrow="Historical mode"
         title="Events in context."

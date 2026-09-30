@@ -1,7 +1,19 @@
+import type { Metadata } from "next";
+import { Breadcrumbs } from "@/components/Seo";
 import { PageIntro } from "@/components/Site";
+import { createSeoMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = createSeoMetadata({
+  title: "Privacy",
+  description: "How Pramaan handles claim suggestions and links to external support services.",
+  path: "/privacy",
+  indexable: false,
+});
+
 export default function PrivacyPage() {
   return (
     <>
+      <Breadcrumbs currentUrl="/privacy" items={[{ name: "Home", href: "/" }, { name: "Privacy" }]} />
       <PageIntro
         eyebrow="Your information"
         title="Privacy"
@@ -20,10 +32,11 @@ export default function PrivacyPage() {
           the public profile URL used to link to the external service.
         </p>
         <h2>Contact</h2>
+        {/* hello@pramaan.org */}
         <p>
           For privacy questions, email{" "}
-          <a className="citation-link" href="mailto:hello@pramaan.org">
-            hello@pramaan.org
+          <a className="citation-link" href="mailto:pranjalvktripathi@gmail.com">
+            pranjalvktripathi@gmail.com
           </a>
           .
         </p>
