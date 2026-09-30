@@ -3,8 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { investigations, slugify } from "@/lib/data";
 import { Eyebrow, Note, SupportCallout, Verdict } from "@/components/Site";
-import { Breadcrumbs, JsonLd } from "@/components/Seo";
-import { createInvestigationMetadata, createSeoMetadata, investigationSchema } from "@/lib/seo";
+import { Breadcrumbs, investigationSchema, JsonLd } from "@/components/Seo";
+import { createInvestigationMetadata, createSeoMetadata } from "@/lib/seo";
 import InvestigationInteractive from "./interactive";
 export function generateStaticParams() {
   return investigations.map((x) => ({ slug: x.slug }));
